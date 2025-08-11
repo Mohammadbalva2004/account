@@ -9,7 +9,8 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 import 'model/transaction_model.dart';
-import 'storage/storage_io.dart' if (dart.library.html) 'storage/storage_web.dart' as platform_storage;
+import 'storage/storage_io.dart'
+    if (dart.library.html) 'storage/storage_web.dart' as platform_storage;
 import 'widgets/summary_cards.dart';
 import 'widgets/filter_bar.dart';
 import 'widgets/transaction_tile.dart';
@@ -106,7 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
       _all.where((t) => t.type == 'expense').fold(0.0, (p, e) => p + e.amount);
 
   String currency(double v) {
-    final f = NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 2);
+    final f =
+        NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 2);
     return f.format(v);
   }
 
@@ -115,11 +117,14 @@ class _HomeScreenState extends State<HomeScreen> {
       await storage.exportJson(_all);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(kIsWeb ? 'JSON downloaded' : 'JSON exported to documents')),
+        SnackBar(
+            content: Text(
+                kIsWeb ? 'JSON downloaded' : 'JSON exported to documents')),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Export failed: $e')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Export failed: $e')));
     }
   }
 
@@ -137,24 +142,29 @@ class _HomeScreenState extends State<HomeScreen> {
               headers: ['Type', 'Amount', 'Category', 'Note', 'Date'],
               data: _all
                   .map((t) => [
-                t.type,
-                t.amount.toStringAsFixed(2),
-                t.category ?? '-',
-                t.note,
-                df.format(t.date),
-              ])
+                        t.type,
+                        t.amount.toStringAsFixed(2),
+                        t.category ?? '-',
+                        t.note,
+                        df.format(t.date),
+                      ])
                   .toList(),
             ),
             pw.SizedBox(height: 12),
-            pw.Paragraph(text: 'Total Income: ${_totalIncome.toStringAsFixed(2)}'),
-            pw.Paragraph(text: 'Total Expense: ${_totalExpense.toStringAsFixed(2)}'),
-            pw.Paragraph(text: 'Balance: ${(_totalIncome - _totalExpense).toStringAsFixed(2)}'),
+            pw.Paragraph(
+                text: 'Total Income: ${_totalIncome.toStringAsFixed(2)}'),
+            pw.Paragraph(
+                text: 'Total Expense: ${_totalExpense.toStringAsFixed(2)}'),
+            pw.Paragraph(
+                text:
+                    'Balance: ${(_totalIncome - _totalExpense).toStringAsFixed(2)}'),
           ],
         ),
       );
 
       final bytes = await pdf.save();
-      final filename = 'transactions_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final filename =
+          'transactions_${DateTime.now().millisecondsSinceEpoch}.pdf';
       await storage.savePdf(bytes, filename);
 
       try {
@@ -163,11 +173,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(kIsWeb ? 'PDF downloaded' : 'PDF saved to documents')),
+        SnackBar(
+            content:
+                Text(kIsWeb ? 'PDF downloaded' : 'PDF saved to documents')),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('PDF export failed: $e')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('PDF export failed: $e')));
     }
   }
 
@@ -199,8 +212,12 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Delete'),
         content: const Text('Remove transaction?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('No')),
-          TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Yes')),
+          TextButton(
+              onPressed: () => Navigator.pop(c, false),
+              child: const Text('No')),
+          TextButton(
+              onPressed: () => Navigator.pop(c, true),
+              child: const Text('Yes')),
         ],
       ),
     );
@@ -221,7 +238,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final isMobile = screenWidth < 600;
 
     //  Responsive padding based on screen size
-    final horizontalPadding = isMobile ? 12.0 : isTablet ? 24.0 : 32.0;
+    final horizontalPadding = isMobile
+        ? 12.0
+        : isTablet
+            ? 24.0
+            : 32.0;
     final verticalSpacing = isMobile ? 8.0 : 12.0;
 
     return Scaffold(
@@ -247,8 +268,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: const Text('Confirm'),
                     content: const Text('Clear all transactions?'),
                     actions: [
-                      TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('No')),
-                      TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Yes')),
+                      TextButton(
+                          onPressed: () => Navigator.pop(c, false),
+                          child: const Text('No')),
+                      TextButton(
+                          onPressed: () => Navigator.pop(c, true),
+                          child: const Text('Yes')),
                     ],
                   ),
                 );
@@ -258,7 +283,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               }
               if (v == 'import') {
-                await AddEditTransactionSheet.importJson(context, onImported: (list) async {
+                await AddEditTransactionSheet.importJson(context,
+                    onImported: (list) async {
                   setState(() {
                     _all = [...list, ..._all];
                     _all.sort((a, b) => b.date.compareTo(a.date));
@@ -280,7 +306,8 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, constraints) {
             //  Added LayoutBuilder for better responsive handling
             return SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(horizontalPadding, verticalSpacing, horizontalPadding, 0),
+              padding: EdgeInsets.fromLTRB(
+                  horizontalPadding, verticalSpacing, horizontalPadding, 0),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight: constraints.maxHeight - verticalSpacing,
@@ -314,52 +341,54 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     //  Responsive transaction list with proper height constraints
                     SizedBox(
-                      height: constraints.maxHeight - 280 - (verticalSpacing * 3),
+                      height:
+                          constraints.maxHeight - 280 - (verticalSpacing * 3),
                       child: Card(
                         child: filtered.isEmpty
                             ? Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(isMobile ? 20.0 : 28.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.receipt_long_outlined,
-                                  size: isMobile ? 48 : 64,
-                                  color: cs.outline,
-                                ),
-                                SizedBox(height: isMobile ? 12 : 16),
-                                Text(
-                                  'No transactions yet',
-                                  style: GoogleFonts.inter(
-                                    fontSize: isMobile ? 16 : 18,
-                                    color: cs.onSurfaceVariant,
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.all(isMobile ? 20.0 : 28.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.receipt_long_outlined,
+                                        size: isMobile ? 48 : 64,
+                                        color: cs.outline,
+                                      ),
+                                      SizedBox(height: isMobile ? 12 : 16),
+                                      Text(
+                                        'No transactions yet',
+                                        style: GoogleFonts.inter(
+                                          fontSize: isMobile ? 16 : 18,
+                                          color: cs.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        )
+                              )
                             : ListView.separated(
-                          padding: EdgeInsets.all(isMobile ? 6 : 8),
-                          itemBuilder: (_, i) {
-                            final t = filtered[i];
-                            return TransactionTile(
-                              t: t,
-                              onTap: () => _openAdd(t),
-                              onDelete: () => _delete(t),
-                              currency: currency,
-                              isCompact: isMobile,
-                            );
-                          },
-                          separatorBuilder: (_, __) => Divider(
-                            height: 1,
-                            color: cs.outlineVariant,
-                            indent: isMobile ? 12 : 16,
-                            endIndent: isMobile ? 12 : 16,
-                          ),
-                          itemCount: filtered.length,
-                        ),
+                                padding: EdgeInsets.all(isMobile ? 6 : 8),
+                                itemBuilder: (_, i) {
+                                  final t = filtered[i];
+                                  return TransactionTile(
+                                    t: t,
+                                    onTap: () => _openAdd(t),
+                                    onDelete: () => _delete(t),
+                                    currency: currency,
+                                    isCompact: isMobile,
+                                  );
+                                },
+                                separatorBuilder: (_, __) => Divider(
+                                  height: 1,
+                                  color: cs.outlineVariant,
+                                  indent: isMobile ? 12 : 16,
+                                  endIndent: isMobile ? 12 : 16,
+                                ),
+                                itemCount: filtered.length,
+                              ),
                       ),
                     ),
                   ],
@@ -372,17 +401,20 @@ class _HomeScreenState extends State<HomeScreen> {
       //  Responsive FAB positioning
       floatingActionButton: isDesktop
           ? Padding(
-        padding: const EdgeInsets.only(bottom: 16, right: 16),
-        child: FloatingActionButton.extended(
-          onPressed: () => _openAdd(),
-          icon: const Icon(Icons.add),
-          label: const Text('Add Transaction'),
-        ),
-      )
-          : FloatingActionButton(
-        onPressed: () => _openAdd(),
-        child: const Icon(Icons.add),
-      ),
+              padding: const EdgeInsets.only(bottom: 20, right: 70),
+              child: FloatingActionButton.extended(
+                onPressed: () => _openAdd(),
+                icon: const Icon(Icons.add),
+                label: const Text('Add Transaction'),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.only(right: 20.0, bottom: 20.0),
+              child: FloatingActionButton(
+                onPressed: () => _openAdd(),
+                child: const Icon(Icons.add),
+              ),
+            ),
       floatingActionButtonLocation: isDesktop
           ? FloatingActionButtonLocation.endFloat
           : FloatingActionButtonLocation.endFloat,
