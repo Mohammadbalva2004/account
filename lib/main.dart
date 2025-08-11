@@ -541,9 +541,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   .map((t) => [
                         t.type,
                         t.amount.toStringAsFixed(2),
-                        t.category ?? '-',
                         t.note,
-                        df.format(t.date),
+                        df.format(t.date), // Shows date and time
                       ])
                   .toList(),
             ),
@@ -633,7 +632,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final isDesktop = screenWidth >= 1200;
     final isMobile = screenWidth < 600;
 
-    //  Responsive padding based on screen size
     final horizontalPadding = isMobile
         ? 12.0
         : isTablet
@@ -764,6 +762,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return TransactionTile(
                                     t: t,
                                     onTap: () => _openAdd(t),
+                                    onEdit: () =>
+                                        _openAdd(t), // Added edit callback
                                     onDelete: () => _delete(t),
                                     currency: currency,
                                     isCompact: isMobile,
@@ -788,19 +788,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: isDesktop
           ? Padding(
-              padding: const EdgeInsets.only(bottom: 20, right: 70),
+              padding: const EdgeInsets.only(bottom: 16, right: 16),
               child: FloatingActionButton.extended(
                 onPressed: () => _openAdd(),
                 icon: const Icon(Icons.add),
                 label: const Text('Add Transaction'),
               ),
             )
-          : Padding(
-              padding: const EdgeInsets.only(right: 20.0, bottom: 20.0),
-              child: FloatingActionButton(
-                onPressed: () => _openAdd(),
-                child: const Icon(Icons.add),
-              ),
+          : FloatingActionButton(
+              onPressed: () => _openAdd(),
+              child: const Icon(Icons.add),
             ),
       floatingActionButtonLocation: isDesktop
           ? FloatingActionButtonLocation.endFloat
